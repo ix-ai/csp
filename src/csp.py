@@ -61,7 +61,7 @@ if __name__ == '__main__':
     configure_logging()
     LOG.info("Starting {}, listening on {}:{}".format(
         os.path.splitext(sys.modules['__main__'].__file__)[0][1:],
-        SETTINGS['host'],
+        SETTINGS['address'],
         SETTINGS['port']
     ))
     serve(APP, host=SETTINGS['address'], port=SETTINGS['port'])
