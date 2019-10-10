@@ -56,6 +56,7 @@ def log_csp():
         content = request.get_data(as_text=True)
         LOG.info('{}'.format(content))
 
+    return 'OK'
 
 if __name__ == '__main__':
     configure_logging()
