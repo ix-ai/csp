@@ -50,13 +50,16 @@ def configure_logging():
 def log_csp():
     """ Logs the content posted """
 
+    return_message = 'OK'
     if request.content_length > SETTINGS['content_length']:
-        LOG.error('Request too large ({}). Dropping.'.format(request.content_length))
+        return_message = 'Request too large ({}). Dropping.'.format(request.content_length)
+        LOG.error(return_message)
     else:
         content = request.get_data(as_text=True)
         LOG.info('{}'.format(content))
 
-    return 'OK'
+    return return_message
+
 
 if __name__ == '__main__':
     configure_logging()
