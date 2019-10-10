@@ -1,4 +1,4 @@
-FROM docker:latest
+FROM alpine:latest
 
 LABEL maintainer='ix.ai <docker@ix.ai>'
 
