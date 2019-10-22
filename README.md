@@ -5,6 +5,16 @@ A basic Content Security Policy processor running in docker
 ## WIP Warning
 This is still work in progress
 
+## What does it do?
+It logs to STDOUT (and, optionally, to a GELF capable host) the received HTTP POST request.
+
+The request has to go to the path `/csp`.
+
+Just add the header:
+```
+Content-Security-Policy-Report-Only: upgrade-insecure-requests; default-src 'self'; report-uri https://example.com/csp;
+```
+
 ## Usage Examples
 
 ### CLI
