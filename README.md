@@ -46,7 +46,7 @@ services:
 ```
 
 ### docker stack with traefik
-```
+```yml
 version: "3.7"
 
 services:
@@ -64,14 +64,18 @@ services:
   my-website:
     deploy:
       labels:
-[...]
         traefik.http.middlewares.website-csp.headers.customResponseHeaders.Content-Security-Policy-Report-Only: "upgrade-insecure-requests; default-src 'self' https://cdnjs.cloudflare.com; script-src 'self' https://cdnjs.cloudflare.com https://s.ytimg.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; report-uri https://csp.example.com/csp;"
         traefik.http.routers.website.middlewares: website-csp
 [...]
 
 ```
 
-### Environment
+## Output example
+```
+2019-10-26 19:03:25.303 INFO {csp} [log_csp] {"csp-report":{"blocked-uri":"inline","column-number":14648,"document-uri":"https://alex.thom.ae/","line-number":3,"original-policy":"upgrade-insecure-requests; default-src 'self' https://cdnjs.cloudflare.com; script-src 'self' https://cdnjs.cloudflare.com https://s.ytimg.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; report-uri https://csp.ix.ai/csp","referrer":"","source-file":"https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js","violated-directive":"default-src"}}
+2019-10-26 19:03:25.305 INFO {csp} [log_csp] {"csp-report":{"blocked-uri":"inline","column-number":3975,"document-uri":"https://alex.thom.ae/","line-number":3,"original-policy":"upgrade-insecure-requests; default-src 'self' https://cdnjs.cloudflare.com; script-src 'self' https://cdnjs.cloudflare.com https://s.ytimg.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; report-uri https://csp.ix.ai/csp","referrer":"","source-file":"https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js","violated-directive":"default-src"}}
+```
+## Environment
 
 | **Variable**         | **Default** | **Description**                                                        |
 |:---------------------|:-----------:|:-----------------------------------------------------------------------|
