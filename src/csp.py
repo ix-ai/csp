@@ -8,6 +8,7 @@ import pygelf
 from flask import Flask
 from flask import request
 from waitress import serve
+import constants
 
 LOG = logging.getLogger(__name__)
 logging.basicConfig(
@@ -63,8 +64,10 @@ def log_csp():
 
 if __name__ == '__main__':
     configure_logging()
-    LOG.info("Starting {}, listening on {}:{}".format(
+    LOG.info("Starting {} {}, listening on {}:{}".format(
         os.path.splitext(sys.modules['__main__'].__file__)[0][1:],
+        # pylint: disable=no-member
+        constants.VERSION,
         SETTINGS['address'],
         SETTINGS['port']
     ))
