@@ -86,6 +86,15 @@ services:
 | `PORT`               | `9180`      | The port to bind to                                                    |
 | `ADDRESS`            | `*`         | The IP address to bind to                                              |
 
+## Tags and Arch
+
+Starting with version v0.0.3, the images are multi-arch, with builds for amd64, arm64 and armv7.
+* `vN.N.N` - for example v0.0.3
+* `latest` - always pointing to the latest version
+* `dev-branch` - the last build on a feature/development branch
+* `dev-master` - the last build on the master branch
+
 ## Resources:
 * GitLab: https://gitlab.com/ix.ai/csp
+* GitHub: https://github.com/ix-ai/csp
 * Docker Hub: https://hub.docker.com/r/ixdotai/csp
