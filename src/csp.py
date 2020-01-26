@@ -18,6 +18,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+FILENAME = os.path.splitext(sys.modules['__main__'].__file__)[0]
+
 APP = Flask(__name__)
 APP.secret_key = os.urandom(64).hex()
 
@@ -40,7 +42,7 @@ def configure_logging():
             port=SETTINGS['gelf_port'],
             debug=True,
             include_extra_fields=True,
-            _ix_id=os.path.splitext(sys.modules['__main__'].__file__)[0][1:],
+            _ix_id=FILENAME,
         )
         LOG.addHandler(GELF)
         gelf_enabled = True
@@ -65,7 +67,7 @@ def log_csp():
 if __name__ == '__main__':
     configure_logging()
     LOG.info("Starting {} {}, listening on {}:{}".format(
-        os.path.splitext(sys.modules['__main__'].__file__)[0][1:],
+        FILENAME,
         # pylint: disable=no-member
         constants.VERSION,
         SETTINGS['address'],

@@ -88,7 +88,7 @@ services:
 
 ## Tags and Arch
 
-Starting with version v0.0.3, the images are multi-arch, with builds for amd64, arm64 and armv7.
+Starting with version v0.0.4, the images are multi-arch, with builds for amd64, arm64, armv7 and armv6.
 * `vN.N.N` - for example v0.0.3
 * `latest` - always pointing to the latest version
 * `dev-branch` - the last build on a feature/development branch

@@ -1,6 +1,6 @@
 FROM alpine:latest
-
-LABEL maintainer='ix.ai <docker@ix.ai>'
+LABEL maintainer="docker@ix.ai" \
+      ai.ix.repository="ix.ai/csp"
 
 WORKDIR /app
 
