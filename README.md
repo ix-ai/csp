@@ -29,7 +29,7 @@ docker run --rm -it \
     -e PORT=80 \
     -e GELF_HOST=graylog \
     --name csp \
-    ixdotai/csp:latest
+    registry.gitlab.com/ix.ai/csp:latest
 ```
 
 ### docker-compose
@@ -38,7 +38,7 @@ version: "3.7"
 
 services:
   csp:
-    image: ixdotai/csp:latest
+    image: registry.gitlab.com/ix.ai/csp:latest
     environment:
       PORT: '80'
     ports:
@@ -51,7 +51,7 @@ version: "3.7"
 
 services:
   csp:
-    image: ixdotai/csp:latest
+    image: registry.gitlab.com/ix.ai/csp:latest
     deploy:
       labels:
         traefik.enable: 'true'
@@ -97,4 +97,5 @@ Starting with version v0.0.4, the images are multi-arch, with builds for amd64, 
 ## Resources:
 * GitLab: https://gitlab.com/ix.ai/csp
 * GitHub: https://github.com/ix-ai/csp
+* GitLab Registry: https://gitlab.com/ix.ai/csp/container_registry
 * Docker Hub: https://hub.docker.com/r/ixdotai/csp
