@@ -67,13 +67,17 @@ services:
       labels:
         traefik.enable: 'true'
         traefik.http.routers.csp.entrypoints: http,https
-        traefik.http.routers.csp.service: csp@docker
-        traefik.http.routers.csp.rule: "Host(`csp.example.com`)"
+        traefik.http.routers.csp.rule: "Host(`csp.example.com`) && Path(`/`)"
         traefik.http.routers.csp.tls.certResolver: 'default'
+        traefik.http.routers.csp-metrics.entrypoints: http,https
+        traefik.http.routers.csp-metrics.rule: "Host(`csp.example.com`) && Path(`/metrics`)"
+        traefik.http.routers.csp-metrics.middlewares: auth
+        traefik.http.routers.csp-metrics.tls.certResolver: 'default'
         traefik.http.services.csp.loadbalancer.server.port: '9180'
     environment:
       CSP_PATH: '/'
       HEALTHZ_PATH: '/health'
+      ENABLE_METRICS: 'yes'
 [...]
   my-website:
     deploy:
@@ -114,14 +118,43 @@ Various errors (with `LOGLEVEL:DEBUG`):
 2020-12-06 14:54:07.616 DEBUG [csp.log_csp] Content is not JSON: `{"ab": e2}`
 ```
 
+## Metrics
+
+When setting `ENABLE_METRICS=yes`, the following metrics are exposed:
+```
+# HELP csp_valid_violation_reports_total Counts the number of valid violation reports
+# TYPE csp_valid_violation_reports_total counter
+csp_valid_violation_reports_total{blocked_uri="inline",document_uri="https://xxxREDACTEDxxx/",line_number="925",original_policy="upgrade-insecure-requests; default-src self https://cdnjs.cloudflare.com; script-src self https://cdnjs.cloudflare.com https://s.ytimg.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; report-uri https://csp.example.com/csp;",violated_directive="script-src-elem"} 3.0
+# HELP csp_valid_violation_reports_created Counts the number of valid violation reports
+# TYPE csp_valid_violation_reports_created gauge
+csp_valid_violation_reports_created{blocked_uri="inline",document_uri="https://xxxREDACTEDxxx/",line_number="925",original_policy="upgrade-insecure-requests; default-src self https://cdnjs.cloudflare.com; script-src self https://cdnjs.cloudflare.com https://s.ytimg.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; report-uri https://csp.example.com/csp;",violated_directive="script-src-elem"} 1.607272996845561e+09
+# HELP csp_invalid_violation_reports_total Counts the number of invalid violation reports
+# TYPE csp_invalid_violation_reports_total counter
+csp_invalid_violation_reports_total{reason="non-csp"} 2.0
+csp_invalid_violation_reports_total{reason="non-json"} 1.0
+csp_invalid_violation_reports_total{reason="empty"} 1.0
+csp_invalid_violation_reports_total{reason="too-large"} 2.0
+# HELP csp_invalid_violation_reports_created Counts the number of invalid violation reports
+# TYPE csp_invalid_violation_reports_created gauge
+csp_invalid_violation_reports_created{reason="non-csp"} 1.60727299902503e+09
+csp_invalid_violation_reports_created{reason="non-json"} 1.607273003925279e+09
+csp_invalid_violation_reports_created{reason="empty"} 1.607273008638792e+09
+csp_invalid_violation_reports_created{reason="too-large"} 1.607273014508008e+09
+# HELP csp_version_info Information about CSP
+# TYPE csp_version_info gauge
+csp_version_info{version="0.2.0-225909200"} 1.0
+```
+
 ## Environment
 
 | **Variable**             | **Default** | **Description**                                                        |
 |:-------------------------|:-----------:|:-----------------------------------------------------------------------|
 | `MAX_CONTENT_LENGTH`     | `32768`     | The maximum content length (in bytes) of the HTTP POST content         |
 | `ENABLE_HEALTHZ_VERSION` | `no`        | Set this to `yes` to show the version on the `HEALTHZ_PATH` endpoint   |
+| `ENABLE_METRICS`         | `no`        | Set this to `yes` to enable the Prometheus metrics                     |
 | `CSP_PATH`               | `/csp`      | The path used for the CSP reporting                                    |
 | `HEALTHZ_PATH`           | `/healthz`  | The path used for the healthcheck                                      |
+| `METRICS_PATH`           | `/metrics`  | The path used for the the Prometheus metrics                           |
 | `LOGLEVEL`               | `INFO`      | [Logging Level](https://docs.python.org/3/library/logging.html#levels) |
 | `GELF_HOST`              | -           | If set, GELF UDP logging to this host will be enabled                  |
 | `GELF_PORT`              | `12201`     | Ignored, if `GELF_HOST` is unset. The UDP port for GELF logging        |

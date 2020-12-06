@@ -7,7 +7,8 @@ import json
 from flask import Flask
 from flask import request
 from waitress import serve
-from .lib.constants import VERSION, BUILD, W001, W002, W003
+from .lib.constants import VERSION, BUILD, W001, W002, W003, W004
+from .lib import prometheus
 log = logging.getLogger('csp')
 
 
@@ -19,9 +20,10 @@ class CSP():
         'address': '*',
         'port': 9180,
         'enable_healthz_version': False,
+        'enable_metrics': False,
         'csp_path': '/csp',
         'healthz_path': '/healthz',
-        'metrics_path': '/metrics',  # Placeholder
+        'metrics_path': '/metrics',
     }
 
     def __init__(self, **kwargs):
@@ -34,6 +36,8 @@ class CSP():
         self.server.secret_key = os.urandom(64).hex()
         self.server.add_url_rule(self.settings['csp_path'], 'csp', self.log_csp, methods=['POST'])
         self.server.add_url_rule(self.settings['healthz_path'], 'healthz', self.healthz, methods=['GET'])
+        if self.settings['enable_metrics']:
+            self.server.add_url_rule(self.settings['metrics_path'], 'metrics', self.metrics, methods=['GET', 'POST'])
 
     def log_csp(self):
         """ Logs the content posted """
@@ -46,22 +50,49 @@ class CSP():
             if request.content_length > self.settings['max_content_length']:
                 log.warning(f'{W001} ({request.content_length}). Dropping.')
                 result = (W001, 413)
+                prometheus.PROM_INVALID_VIOLATION_REPORTS_COUNTER.labels(reason='too-large').inc(1)
         except TypeError:
             log.warning(W002)
             result = (W002, 422)
+            prometheus.PROM_INVALID_VIOLATION_REPORTS_COUNTER.labels(reason='empty').inc(1)
 
         if result == ('OK', 200):
             log.debug(f"{request.environ}")
             content = request.get_data(as_text=True)
             try:
-                json_content = json.loads(content)
-                log.info(f'{json.dumps(json_content)}')
-                # Placeholder: json_content can now be analysed. Ideally, with a function outside of the CSP class
+                log.info(self.__process_csp(json.loads(content)))
+            except CSPError:
+                log.debug(f'{W004}: `{content}`')
+                log.warning(W004)
+                result = (W004, 422)
+                prometheus.PROM_INVALID_VIOLATION_REPORTS_COUNTER.labels(reason='non-csp').inc(1)
             except json.decoder.JSONDecodeError:
                 log.debug(f'{W003}: `{content}`')
+                log.warning(W003)
                 result = (W003, 422)
+                prometheus.PROM_INVALID_VIOLATION_REPORTS_COUNTER.labels(reason='non-json').inc(1)
 
         return result
+
+    def __process_csp(self, content):
+        """ Takes the JSON content and creates the metrics for it """
+        try:
+            report = content['csp-report']
+        except KeyError:
+            raise CSPError from KeyError
+
+        try:
+            prometheus.PROM_VALID_VIOLATION_REPORTS_COUNTER.labels(
+                blocked_uri=report['blocked-uri'],
+                document_uri=report['document-uri'],
+                original_policy=report['original-policy'],
+                violated_directive=report['violated-directive'],
+                line_number=report.get('line-number', 0),
+                source_file=report.get('source-file'),
+            ).inc(1)
+        except KeyError:
+            raise CSPError from KeyError
+        return json.dumps(content)
 
     def healthz(self):
         """ Healthcheck """
@@ -73,6 +104,10 @@ class CSP():
         if self.settings['enable_healthz_version']:
             message = version_string
         return (message, 200)
+
+    def metrics(self):
+        """ Prometheus Metrics """
+        return prometheus.init()
 
     def start(self):
         """ Start the web server """
@@ -90,3 +125,7 @@ class CSP():
     def get_address(self) -> int:
         """ returns the configured address from self.settings['port'] """
         return self.settings['address']
+
+
+class CSPError(Exception):
+    """ The CSP Exception resides here """
