@@ -1,0 +1,4 @@
+waitress==1.4.4
+flask==1.1.2
+prometheus_client==0.9.0
+pygelf==0.3.6
