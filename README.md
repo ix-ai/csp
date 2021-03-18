@@ -186,4 +186,5 @@ Starting with version `v0.1.0`, the images are multi-arch, with builds for i386,
 * GitLab: https://gitlab.com/ix.ai/csp
 * GitHub: https://github.com/ix-ai/csp
 * GitLab Registry: https://gitlab.com/ix.ai/csp/container_registry
+* GitHub Registry: https://ghcr.io/ix-ai/csp
 * Docker Hub: https://hub.docker.com/r/ixdotai/csp
