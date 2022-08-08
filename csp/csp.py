@@ -24,6 +24,7 @@ class CSP():
         'csp_path': '/csp',
         'healthz_path': '/healthz',
         'metrics_path': '/metrics',
+        'enable_user_agent': False,
     }
 
     def __init__(self, **kwargs):
@@ -60,7 +61,10 @@ class CSP():
             log.debug(f"{request.environ}")
             content = request.get_data(as_text=True)
             try:
-                log.info(self.__process_csp(json.loads(content)))
+                if self.settings['enable_user_agent']:
+                    log.info(self.__process_csp(json.loads(content), request.user_agent))
+                else:
+                    log.info(self.__process_csp(json.loads(content), None))
             except CSPError:
                 log.debug(f'{W004}: `{content}`')
                 log.warning(W004)
@@ -74,7 +78,7 @@ class CSP():
 
         return result
 
-    def __process_csp(self, content):
+    def __process_csp(self, content, user_agent):
         """ Takes the JSON content and creates the metrics for it """
         try:
             report = content['csp-report']
@@ -82,16 +86,29 @@ class CSP():
             raise CSPError from KeyError
 
         try:
-            prometheus.PROM_VALID_VIOLATION_REPORTS_COUNTER.labels(
-                blocked_uri=report['blocked-uri'],
-                document_uri=report['document-uri'],
-                original_policy=report['original-policy'],
-                violated_directive=report['violated-directive'],
-                line_number=report.get('line-number', 0),
-                source_file=report.get('source-file'),
-            ).inc(1)
+            labels = {
+                'blocked_uri': report['blocked-uri'],
+                'document_uri': report['document-uri'],
+                'original_policy': report['original-policy'],
+                'violated_directive': report['violated-directive'],
+                'line_number': report.get('line-number', 0),
+                'source_file': report.get('source-file'),
+            }
+
+            if user_agent is None:
+                prometheus.PROM_VALID_VIOLATION_REPORTS_COUNTER.labels(**labels).inc(1)
+            else:
+                labels.update({
+                    'user_agent_platform': user_agent.platform,
+                    'user_agent_browser': user_agent.browser,
+                    'user_agent_version': user_agent.version,
+                })
+                prometheus.PROM_VALID_VIOLATION_REPORTS_COUNTER_AGENT.labels(**labels).inc(1)
+
+            return json.dumps(labels)
         except KeyError:
             raise CSPError from KeyError
+
         return json.dumps(content)
 
     def healthz(self):
