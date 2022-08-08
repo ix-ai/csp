@@ -150,6 +150,7 @@ csp_version_info{version="0.2.0-225909200"} 1.0
 | **Variable**             | **Default** | **Description**                                                        |
 |:-------------------------|:-----------:|:-----------------------------------------------------------------------|
 | `MAX_CONTENT_LENGTH`     | `32768`     | The maximum content length (in bytes) of the HTTP POST content         |
+| `ENABLE_USER_AGENT`      | `no`        | Enable the labels `user_agent_platform`, `user_agent_browser` and `user_agent_version` |
 | `ENABLE_HEALTHZ_VERSION` | `no`        | Set this to `yes` to show the version on the `HEALTHZ_PATH` endpoint   |
 | `ENABLE_METRICS`         | `no`        | Set this to `yes` to enable the Prometheus metrics                     |
 | `CSP_PATH`               | `/csp`      | The path used for the CSP reporting                                    |
@@ -174,7 +175,14 @@ Non-JSON content will be logged as follows:
 2020-12-06 15:15:58.497 DEBUG [csp.log_csp] Content is not JSON: `{"ab": e2}`
 ```
 
+## Contributors
+
+Thank you to the contributors:
+* @bgi: ix.ai/csp!13
+
 ## Tags and Arch
+
+**NOTE**: Due to the introduction of storage quota by GitLab, only the `latest` tag will be kept in the GitLab Registry.
 
 Starting with version `v0.1.0`, the images are multi-arch, with builds for i386, amd64, arm64, armv7 and armv6.
 * `vN.N.N` - for example v0.1.0
