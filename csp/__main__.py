@@ -20,6 +20,7 @@ options = helpers.gather_environ({
     'csp_path': 'string',
     'healthz_path': 'string',
     'metrics_path': 'string',
+    'enable_user_agent': 'boolean',
 })
 c = csp.CSP(**options)
 
