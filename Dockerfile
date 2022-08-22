@@ -1,6 +1,7 @@
 FROM alpine:latest
 LABEL maintainer="docker@ix.ai" \
-      ai.ix.repository="ix.ai/csp"
+      ai.ix.repository="ix.ai/csp" \
+      org.opencontianers.image.description="A basic Content Security Policy processor running in docker"
 
 COPY csp/requirements.txt /csp/requirements.txt
 

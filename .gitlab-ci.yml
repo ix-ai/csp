@@ -2,6 +2,7 @@
 variables:
   DOCKERHUB_REPO_NAME: csp
   GITHUB_REPO_NAME: ix-ai/csp
+  ENABLE_AMD64: 'true'
   ENABLE_ARM64: 'true'
   ENABLE_ARMv7: 'true'
   ENABLE_ARMv6: 'true'
