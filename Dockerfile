@@ -1,4 +1,4 @@
-FROM alpine:3.20.3 as builder
+FROM alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d as builder
 
 COPY csp/requirements.txt /work/csp/requirements.txt
 
@@ -23,7 +23,7 @@ RUN set -xeu; \
 
 RUN pip3 wheel --prefer-binary -r /work/csp/requirements.txt -w /work/wheels
 
-FROM alpine:3.20.3
+FROM alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
 
 LABEL maintainer="docker@ix.ai" \
       ai.ix.repository="ix.ai/csp" \
