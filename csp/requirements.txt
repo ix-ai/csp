@@ -1,4 +1,4 @@
-waitress==3.0.0
+waitress==3.0.1
 flask==3.0.3
 prometheus_client==0.21.0
 pygelf==0.4.2
