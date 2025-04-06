@@ -8,9 +8,9 @@ from flask import Flask
 from flask import request
 from waitress import serve
 from .lib.constants import VERSION, BUILD, W001, W002, W003, W004
-from .lib import prometheus
-log = logging.getLogger('csp')
+from .lib import prometheus, constants
 
+log = logging.getLogger(constants.NAME)
 
 class CSP():
     """ The main CSP class """

@@ -4,6 +4,7 @@
 
 VERSION = None
 BUILD = None
+NAME = 'csp'
 
 W001 = 'W001: Content too large'
 W002 = 'W002: Empty content received'

@@ -8,7 +8,7 @@ from .lib import helpers
 from .lib import constants
 from .lib import prometheus
 
-log = logging.getLogger('csp')
+log = logging.getLogger(constants.NAME)
 
 # The environ keys to use, each of them correlating to `int`, `list`, `string`, `boolean` or `filter`
 options = helpers.gather_environ({

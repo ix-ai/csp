@@ -4,8 +4,9 @@
 
 import logging
 import os
+import constants
 
-log = logging.getLogger("csp")
+log = logging.getLogger(constants.NAME)
 
 
 def gather_environ(keys) -> dict:

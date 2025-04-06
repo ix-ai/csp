@@ -8,7 +8,7 @@ from .lib import constants
 
 version = f'{constants.VERSION}-{constants.BUILD}'
 log = logging.setup_logger(
-    name='csp',
+    name=constants.NAME,
     level=os.environ.get('LOGLEVEL', 'INFO'),
     gelf_host=os.environ.get('GELF_HOST'),
     gelf_port=int(os.environ.get('GELF_PORT', 12201)),
