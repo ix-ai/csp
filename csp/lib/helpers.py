@@ -4,7 +4,11 @@
 
 import logging
 import os
-import constants
+
+try:
+    from . import constants
+except Exception:
+    import constants
 
 log = logging.getLogger(constants.NAME)
 
