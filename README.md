@@ -1,5 +1,21 @@
 # csp
 
+## Deprecation Notice
+
+**This project is deprecated and has been archived**. Please switch to [gitlab.com/egos-tech/csp](https://gitlab.com/egos-tech/csp).
+
+Replace your docker image with `registry.gitlab.com/egos-tech/csp:latest`.
+
+Please note, a new versioning format is established, starting with `1.0.0` - this version is one-to-one compatible with the latest version in this repository:
+
+```yml
+image: registry.gitlab.com/egos-tech/csp:1.0.0
+```
+
+All future updates will only be done to that project.
+
+## Description
+
 [![Pipeline Status](https://gitlab.com/ix.ai/csp/badges/master/pipeline.svg)](https://gitlab.com/ix.ai/csp/)
 [![Docker Stars](https://img.shields.io/docker/stars/ixdotai/csp.svg)](https://hub.docker.com/r/ixdotai/csp/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/ixdotai/csp.svg)](https://hub.docker.com/r/ixdotai/csp/)
